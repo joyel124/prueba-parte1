@@ -27,10 +27,10 @@ export default function BooksList() {
                 const json: GutendexResponse = await res.json()
                 setItems((json.results ?? []).slice(0, 10))
                 setStatus("success")
-            } catch (e: any) {
-                if (e?.name !== "AbortError") {
-                    setError(e?.message ?? "Error inesperado")
-                    setStatus("error")
+            } catch (e: unknown) {
+                if (!(e instanceof DOMException && e.name === "AbortError")) {
+                    setError(e instanceof Error ? e.message : "Error inesperado");
+                    setStatus("error");
                 }
             }
         })()
