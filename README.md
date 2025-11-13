@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Parte 1 — Listado de libros (Next.js + TypeScript + TailwindCSS)
 
-## Getting Started
+Este entregable implementa un **listado de libros** consumiendo la API pública **Gutendex** con **Next.js 14 (App Router)** y **TypeScript**.  
+Incluye **estados de carga y error**, UI responsiva con **TailwindCSS**, e íconos de **lucide-react**.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Funcionalidad
+- **Fetch** a `https://gutendex.com/books/?page=1` (primer página) y render de los **10** primeros resultados.
+- **Loading state**: spinner central con mensaje “Cargando libros…”.
+- **Error state**: tarjeta centrada con icono y detalle del error (p. ej., `HTTP 500`).
+- **Lista** en **grid** de tarjetas: título, primer autor (o “Autor desconocido”), y decoración con hover.
+- **Accesibilidad** básica: jerarquía semántica, foco visual, contraste y `aria-hidden` en íconos decorativos.
+- **Cancelación** de la petición con `AbortController` al desmontar el componente.
+- **TypeScript estricto**: tipos `Author`, `Book`, `GutendexResponse`. Sin `any` en `catch` si se habilita `useUnknownInCatchVariables` (ver notas).
+
+---
+
+## Stack
+- **Next.js 14+** (App Router) + **TypeScript**
+- **TailwindCSS**
+- **lucide-react** (íconos)
+
+---
+
+## Estructura relevante
+```
+/app
+  page.tsx             # monta el componente BooksList
+  layout.tsx           # fuentes + globals
+  globals.css          # Tailwind base y estilos globales
+/components
+  BookList.tsx         # lógica de fetch + UI (loading, error, grid)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Ejecución local
+1) **Instalar dependencias**
+```bash
+npm install
+```
+2) **Arrancar en desarrollo**
+```bash
+npm run dev
+# http://localhost:3000
+```
+> Requiere conexión a Internet para consultar la API pública de Gutendex.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3) **Build de producción**
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Detalles de implementación
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Componente principal: `components/BookList.tsx`
+- **Estado**: `items`, `status` (`"loading" | "success" | "error"`), `error`.
+- **Efecto**: `useEffect` con `AbortController` para cancelar el `fetch` al desmontar.
+- **Errores**:
+    - Si `res.ok` es falso, se marca `status = "error"` y se muestra el `status` HTTP.
+    - `catch`: si el error **no** es de tipo `AbortError`, se muestra un mensaje.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### UI (Tailwind)
+- Fondo con gradiente suave, **grid** responsivo (`1/2/3` columnas).
+- Tarjetas con `hover`, sombras y `line-clamp` para evitar overflow en títulos.
+- Íconos de `lucide-react` (`BookOpen`, `Loader`, `AlertCircle`).
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Despliegue
+- **Vercel**: importar el repo y desplegar con los presets de Next.js (no requiere variables de entorno).
+- **Netlify/Amplify Hosting**: build con `npm run build` y adaptador Next.js.
