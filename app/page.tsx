@@ -1,4 +1,4 @@
-import BooksList from "@/components/BookList"
+import BooksList from "@/components/BooksList"
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
