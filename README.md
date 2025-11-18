@@ -10,7 +10,6 @@ Incluye **estados de carga y error**, UI responsiva con **TailwindCSS**, e ícon
 - **Loading state**: spinner con mensaje.
 - **Error state**: tarjeta centrada con icono y detalle del error (p. ej., `HTTP 500`).
 - **Lista** en **grid** de tarjetas: título, primer autor (o “Autor desconocido”).
-- **Accesibilidad** básica: jerarquía semántica, foco visual, contraste y `aria-hidden` en íconos decorativos.
 - **Cancelación** de la petición con `AbortController` al desmontar el componente.
 - **TypeScript estricto**: tipos `Author`, `Book`, `GutendexResponse`.
 
